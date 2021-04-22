@@ -1,0 +1,9 @@
+{
+  "solidity.defaultCompiler": "remote",
+  "solidity.compileUsingRemoteVersion": "v0.5.16+commit.9c3226ce",
+  "editor.formatOnSave": true,
+  "emmet.syntaxProfiles": {"javascript":"jsx"},
+  "editor.quickSuggestions": {
+    "strings": true,
+  }
+}
