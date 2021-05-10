@@ -5,7 +5,7 @@ import {
   filledOrdersLoadedSelector,
   filledOrdersSelector,
 } from "../store/selectors";
-import Spiner from "./Spiner";
+import Spinner from "./Spinner";
 
 const showFilledOrders = (filledOrders) => {
   return (
@@ -43,7 +43,7 @@ class Trades extends Component {
               {this.props.filledOrdersLoaded ? (
                 showFilledOrders(this.props.filledOrders)
               ) : (
-                <Spiner type="table" />
+                <Spinner type="table" />
               )}
             </table>
           </div>

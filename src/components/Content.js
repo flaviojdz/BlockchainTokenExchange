@@ -1,26 +1,20 @@
-import { Component } from "react";
-import "./App.css";
-import Web3 from "web3";
-import Token from "../abis/Token.json";
-import {
-  loadAccount,
-  loadAllOrders,
-  loadExchange,
-  loadToken,
-  loadWeb3,
-} from "../store/interactions";
+import React, { Component } from "react";
 import { connect } from "react-redux";
-import { accountSelector, exchangeSelector } from "../store/selectors";
-import OrdersBook from "./OrdersBook";
+import { exchangeSelector } from "../store/selectors";
+import { loadAllOrders } from "../store/interactions";
+import OrderBook from "./OrderBook";
 import Trades from "./Trades";
+import "./App.css";
+
 class Content extends Component {
   componentWillMount() {
-    this.loadBlockchainData2(this.props.dispatch);
+    this.loadBlockchainData(this.props.dispatch);
   }
 
-  async loadBlockchainData2(dispatch) {
+  async loadBlockchainData(dispatch) {
     await loadAllOrders(this.props.exchange, dispatch);
   }
+
   render() {
     return (
       <div className="content">
@@ -50,7 +44,7 @@ class Content extends Component {
             </div>
           </div>
         </div>
-        <OrdersBook />
+        <OrderBook />
         <div className="vertical-split">
           <div className="card bg-dark text-white">
             <div className="card-header">Card Title</div>

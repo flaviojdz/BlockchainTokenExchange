@@ -1,7 +1,7 @@
-import { createSelector } from "reselect";
 import { get, groupBy, reject } from "lodash";
-import { ethers, ETHER_ADDRESS, GREEN, RED, tokens } from "../helpers";
+import { createSelector } from "reselect";
 import moment from "moment";
+import { ETHER_ADDRESS, GREEN, RED, tokens, ethers } from "../helpers";
 
 const account = (state) => get(state, "web3.account");
 export const accountSelector = createSelector(account, (a) => a);
@@ -24,6 +24,7 @@ export const contractsLoadedSelector = createSelector(
   (tl, el) => tl && el
 );
 
+// All Orders
 const allOrdersLoaded = (state) =>
   get(state, "exchange.allOrders.loaded", false);
 export const allOrdersLoadedSelector = createSelector(
@@ -34,6 +35,7 @@ export const allOrdersLoadedSelector = createSelector(
 const allOrders = (state) => get(state, "exchange.allOrders.data", []);
 export const allOrdersSelector = createSelector(allOrders, (o) => o);
 
+// Cancelled orders
 const cancelledOrdersLoaded = (state) =>
   get(state, "exchange.cancelledOrders.loaded", false);
 export const cancelledOrdersLoadedSelector = createSelector(
@@ -48,6 +50,7 @@ export const cancelledOrdersSelector = createSelector(
   (o) => o
 );
 
+// Filled Orders
 const filledOrdersLoaded = (state) =>
   get(state, "exchange.filledOrders.loaded", false);
 export const filledOrdersLoadedSelector = createSelector(
@@ -79,7 +82,8 @@ const decorateFilledOrders = (orders) => {
 const decorateOrder = (order) => {
   let etherAmount;
   let tokenAmount;
-  if ((order.tokenGive = ETHER_ADDRESS)) {
+
+  if (order.tokenGive == ETHER_ADDRESS) {
     etherAmount = order.amountGive;
     tokenAmount = order.amountGet;
   } else {
@@ -87,7 +91,9 @@ const decorateOrder = (order) => {
     tokenAmount = order.amountGive;
   }
 
-  let tokenPrice = Math.round((etherAmount / tokenAmount) * 100000) / 100000;
+  const precision = 100000;
+  let tokenPrice =
+    Math.round((etherAmount / tokenAmount) * precision) / precision;
 
   return {
     ...order,
@@ -137,7 +143,7 @@ export const orderBookLoadedSelector = createSelector(
   (loaded) => loaded
 );
 
-export const ordersBookSelector = createSelector(openOrders, (orders) => {
+export const orderBookSelector = createSelector(openOrders, (orders) => {
   orders = decorateOrderBookOrders(orders);
   orders = groupBy(orders, "orderType");
 
@@ -150,9 +156,8 @@ export const ordersBookSelector = createSelector(openOrders, (orders) => {
   };
 });
 
-const decorateOrderBookOrder = (order, previousOrder) => {
+const decorateOrderBookOrder = (order) => {
   const orderType = order.tokenGive === ETHER_ADDRESS ? "buy" : "sell";
-
   return {
     ...order,
     orderType,

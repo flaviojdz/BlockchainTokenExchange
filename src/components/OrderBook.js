@@ -1,11 +1,8 @@
 import { Component } from "react";
 import "./App.css";
 import { connect } from "react-redux";
-import {
-  orderBookLoadedSelector,
-  ordersBookSelector,
-} from "../store/selectors";
-import Spiner from "./Spiner";
+import { orderBookLoadedSelector, orderBookSelector } from "../store/selectors";
+import Spinner from "./Spinner";
 
 const renderOrder = (order) => {
   return (
@@ -44,7 +41,7 @@ class OrdersBook extends Component {
               {this.props.showOrderBook ? (
                 showOrderBook(this.props)
               ) : (
-                <Spiner />
+                <Spinner />
               )}
             </table>
           </div>
@@ -57,7 +54,7 @@ class OrdersBook extends Component {
 function mapStateToProps(state) {
   return {
     showOrderBook: orderBookLoadedSelector(state),
-    orderBook: ordersBookSelector(state),
+    orderBook: orderBookSelector(state),
   };
 }
 
