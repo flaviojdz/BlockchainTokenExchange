@@ -1,5 +1,5 @@
-import { Provider } from "react-redux";
 import App from "./components/App";
+import { Provider } from "react-redux";
 import configureStore from "./store/configureStore";
 import reportWebVitals from "./reportWebVitals";
 import React from "react";

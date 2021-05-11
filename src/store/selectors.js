@@ -1,7 +1,8 @@
-import { get, groupBy, reject } from "lodash";
+import { get, groupBy, minBy, maxBy, reject } from "lodash";
 import { createSelector } from "reselect";
 import moment from "moment";
 import { ETHER_ADDRESS, GREEN, RED, tokens, ethers } from "../helpers";
+import { useSelector } from "react-redux";
 
 const account = (state) => get(state, "web3.account");
 export const accountSelector = createSelector(account, (a) => a);
@@ -172,4 +173,132 @@ const decorateOrderBookOrders = (orders) => {
     order = decorateOrderBookOrder(order);
     return order;
   });
+};
+
+export const myFilledOrdersLoadedSelector = createSelector(
+  filledOrdersLoaded,
+  (loaded) => loaded
+);
+
+export const myFilledOrdersSelector = createSelector(
+  account,
+  filledOrders,
+  (account, orders) => {
+    orders = orders.filter((o) => o.user === account || o.userFill === account);
+
+    orders = orders.sort((a, b) => a.timestamp - b.timestamp);
+
+    orders = decorateMyFilledOrders(orders, account);
+
+    return orders;
+  }
+);
+
+const decorateMyFilledOrders = (orders, account) => {
+  return orders.map((order) => {
+    order = decorateOrder(order);
+    order = decorateMyFilledOrder(order, account);
+    return order;
+  });
+};
+
+const decorateMyFilledOrder = (order, account) => {
+  const myOrder = order.user === account;
+
+  let orderType;
+  if (myOrder) {
+    orderType = order.tokenGive === ETHER_ADDRESS ? "buy" : "sell";
+  } else {
+    orderType = order.tokenGive === ETHER_ADDRESS ? "sell" : "buy";
+  }
+
+  return {
+    ...order,
+    orderType,
+    orderTypeClass: orderType === "buy" ? GREEN : RED,
+    orderSign: orderType === "buy" ? "+" : "-",
+  };
+};
+
+export const myOpenOrdersLoadedSelector = createSelector(
+  orderBookLoaded,
+  (loaded) => loaded
+);
+
+export const myOpenOrdersSelector = createSelector(
+  account,
+  openOrders,
+  (account, orders) => {
+    orders = orders.filter((o) => o.user === account);
+
+    orders = decorateMyOpenOrders(orders, account);
+
+    orders = orders.sort((a, b) => b.timestamp - a.timestamp);
+
+    return orders;
+  }
+);
+
+const decorateMyOpenOrders = (orders, account) => {
+  return orders.map((order) => {
+    order = decorateOrder(order);
+    order = decorateMyOpenOrder(order, account);
+    return order;
+  });
+};
+
+const decorateMyOpenOrder = (order, account) => {
+  let orderType = order.tokenGive === ETHER_ADDRESS ? "buy" : "sell";
+
+  return {
+    ...order,
+    orderType,
+    orderTypeClass: orderType === "buy" ? GREEN : RED,
+  };
+};
+
+export const PriceChartLoadedSelector = createSelector(
+  filledOrdersLoaded,
+  (loaded) => loaded
+);
+
+export const priceChartSelector = createSelector(filledOrders, (orders) => {
+  orders = orders.sort((a, b) => a.timestamp - b.timestamp);
+  orders = orders.map((o) => decorateOrder(o));
+
+  let secondLastOrder, lastOrder;
+  [secondLastOrder, lastOrder] = orders.slice(orders.length - 2, orders.length);
+  const lastPrice = get(lastOrder, "tokenPrice", 0);
+  const secondlastPrice = get(secondLastOrder, "tokenPrice", 0);
+
+  return {
+    lastPrice,
+    lastPriceChange: lastPrice >= secondlastPrice ? "+" : "-",
+    series: [
+      {
+        data: buildGraphData(orders),
+      },
+    ],
+  };
+});
+
+const buildGraphData = (orders) => {
+  orders = groupBy(orders, (o) =>
+    moment.unix(o.timestamp).startOf("hour").format()
+  );
+
+  const hours = Object.keys(orders);
+  const graphData = hours.map((hour) => {
+    const group = orders[hour];
+    const open = group[0];
+    const high = maxBy(group, "tokenPrice");
+    const low = minBy(group, "tokenPrice");
+    const close = group[group.length - 1];
+
+    return {
+      x: new Date(hour),
+      y: [open.tokenPrice, high.tokenPrice, low.tokenPrice, close.tokenPrice],
+    };
+  });
+  return graphData;
 };
