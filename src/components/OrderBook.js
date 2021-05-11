@@ -1,5 +1,4 @@
 import { Component } from "react";
-import "./App.css";
 import { connect } from "react-redux";
 import { orderBookLoadedSelector, orderBookSelector } from "../store/selectors";
 import Spinner from "./Spinner";

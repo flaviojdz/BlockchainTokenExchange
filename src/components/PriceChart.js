@@ -2,7 +2,7 @@ import { Component } from "react";
 import { connect } from "react-redux";
 import Spinner from "./Spinner";
 import Chart from "react-apexcharts";
-import { chartOptions } from "./PriceChart.config";
+import { chartOptions, dummyData } from "./PriceChart.config";
 import {
   PriceChartLoadedSelector,
   priceChartSelector,
@@ -26,7 +26,7 @@ const showPriceChart = (priceChart) => {
       </div>
       <Chart
         options={chartOptions}
-        series={priceChart.series}
+        series={dummyData}
         type="candlestick"
         width="100%"
         height="100%"

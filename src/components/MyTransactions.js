@@ -1,5 +1,4 @@
 import { Component } from "react";
-import "./App.css";
 import { connect } from "react-redux";
 import { Tabs, Tab } from "react-bootstrap";
 import {
