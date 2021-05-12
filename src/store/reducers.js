@@ -50,7 +50,7 @@ function exchange(state = {}, action) {
         orderCancelling: false,
         cancelledOrders: {
           ...state.cancelledOrders,
-          data: [...state.cancelledOrders, action.order],
+          data: [...state.cancelledOrders.data, action.order],
         },
       };
     default:
