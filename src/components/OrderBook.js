@@ -40,7 +40,7 @@ class OrdersBook extends Component {
               {this.props.showOrderBook ? (
                 showOrderBook(this.props)
               ) : (
-                <Spinner />
+                <Spinner type="table" />
               )}
             </table>
           </div>
