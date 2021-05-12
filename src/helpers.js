@@ -14,3 +14,10 @@ export const tokens = (wei) => ethers(wei);
 export const RED = "danger";
 
 export const GREEN = "success";
+
+export const formatBalance = (balance) => {
+  const precision = 100;
+  balance = ethers(balance);
+  balance = Math.round(balance * precision) / precision;
+  return balance;
+};
