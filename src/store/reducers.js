@@ -121,6 +121,66 @@ function exchange(state = {}, action) {
         ...state,
         tokenWithdrawAmount: action.amount,
       };
+
+    case "BUY_ORDER_AMOUNT_CHANGED":
+      return {
+        ...state,
+        buyOrder: { ...state.buyOrder, amount: action.amount },
+      };
+    case "BUY_PRICE_AMOUNT_CHANGED":
+      return {
+        ...state,
+        buyOrder: { ...state.buyOrder, price: action.price },
+      };
+    case "BUY_ORDER_MAKING":
+      return {
+        ...state,
+        buyOrder: {
+          ...state,
+          amount: null,
+          price: null,
+          making: true,
+        },
+      };
+    case "SELL_ORDER_AMOUNT_CHANGED":
+      return {
+        ...state,
+        sellOrder: { ...state.sellOrder, amount: action.amount },
+      };
+    case "SELL_ORDER_PRICE_CHANGED":
+      return {
+        ...state,
+        sellOrder: { ...state.sellOrder, price: action.price },
+      };
+    case "SELL_ORDER_MAKING":
+      return {
+        ...state,
+        sellOrder: {
+          ...state,
+          amount: null,
+          price: null,
+          making: true,
+        },
+      };
+
+    case "ORDER_MADE":
+      index = state.allOrders.data.findIndex(
+        (order) => order.id === action.order.id
+      );
+      if (index === -1) {
+        data = [...state.allOrders.data, action.order];
+      } else {
+        data = state.allOrders.data;
+      }
+      return {
+        ...state,
+        allOrders: {
+          ...state.allOrders,
+          data: data,
+        },
+        buyOrder: { ...state.buyOrder, making: false },
+        sellOrder: { ...state.sellOrder, making: false },
+      };
     default:
       return state;
   }
