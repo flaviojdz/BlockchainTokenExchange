@@ -14,7 +14,7 @@ import Spinner from "./Spinner";
 import { cancelOrder } from "../store/interactions";
 
 const showMyFilledOrders = (props) => {
-  const { myFilledOrders, dispatch } = props;
+  const { myFilledOrders } = props;
   return (
     <tbody>
       {myFilledOrders.map((order) => {

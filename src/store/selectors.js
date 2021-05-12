@@ -2,7 +2,6 @@ import { get, groupBy, minBy, maxBy, reject } from "lodash";
 import { createSelector } from "reselect";
 import moment from "moment";
 import { ETHER_ADDRESS, GREEN, RED, tokens, ethers } from "../helpers";
-import { useSelector } from "react-redux";
 
 const account = (state) => get(state, "web3.account");
 export const accountSelector = createSelector(account, (a) => a);
@@ -84,7 +83,7 @@ const decorateOrder = (order) => {
   let etherAmount;
   let tokenAmount;
 
-  if (order.tokenGive == ETHER_ADDRESS) {
+  if (order.tokenGive === ETHER_ADDRESS) {
     etherAmount = order.amountGive;
     tokenAmount = order.amountGet;
   } else {
@@ -163,7 +162,7 @@ const decorateOrderBookOrder = (order) => {
     ...order,
     orderType,
     orderTypeClass: orderType === "buy" ? GREEN : RED,
-    orderFillClass: orderType === "buy" ? "sell" : "buy",
+    orderFillAction: orderType === "buy" ? "sell" : "buy",
   };
 };
 
@@ -307,5 +306,11 @@ const orderCancelling = (state) =>
   get(state, "exchange.orderCancelling", false);
 export const orderCancellingSelector = createSelector(
   orderCancelling,
+  (status) => status
+);
+
+const orderFilling = (state) => get(state, "exchange.orderfilling", false);
+export const orderfillingSelector = createSelector(
+  orderFilling,
   (status) => status
 );

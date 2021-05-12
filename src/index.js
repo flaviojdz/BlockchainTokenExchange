@@ -1,9 +1,8 @@
 import App from "./components/App";
 import { Provider } from "react-redux";
 import configureStore from "./store/configureStore";
-import reportWebVitals from "./reportWebVitals";
 import React from "react";
-import ReactDOM, { render } from "react-dom";
+import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.css";
 
 ReactDOM.render(

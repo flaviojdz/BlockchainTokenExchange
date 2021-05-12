@@ -9,7 +9,7 @@ import MyTransactions from "./MyTransactions";
 import PriceChart from "./PriceChart";
 
 class Content extends Component {
-  componentWillMount() {
+  componentDidMount() {
     this.loadBlockchainData(this.props);
   }
 
